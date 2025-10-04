@@ -39,17 +39,14 @@ const SectionAboutUs = () => {
                 className="text-lg md:text-xl leading-relaxed text-gray-700 dark:text-gray-300"
                 style={{ fontFamily: "Cormorant Garamond, serif" }}
               >
-                En Pastelería Ines, cada creación es una obra de arte hecha con pasión y los ingredientes más frescos.
-                Desde 20XX, nos hemos dedicado a endulzar los momentos especiales de nuestros clientes, ofreciendo
-                pasteles artesanales y postres únicos que deleitan el paladar y el corazón.
+                Desde 1998, la Pastelería Inés, fundada por Inés Damián en Tuxpan, Jalisco, ha compartido con las familias la pasión por la repostería. Con dedicación y cariño, cada pastel ha sido creado para dar un toque especial a los momentos más importantes de la vida: cumpleaños, bodas, aniversarios y reuniones familiares.
+
               </p>
               <p
                 className="text-lg md:text-xl leading-relaxed text-gray-700 dark:text-gray-300"
                 style={{ fontFamily: "Cormorant Garamond, serif" }}
               >
-                Nuestra misión es superar tus expectativas con sabores inolvidables y diseños personalizados. Ya sea
-                para un cumpleaños, una boda o simplemente un capricho dulce, en Pastelería Ines encontrarás la
-                perfección en cada bocado.
+                Más de dos décadas después, seguimos siendo un referente en sabor y tradición, manteniendo el compromiso de ofrecer productos frescos y de calidad, siempre con el trato cercano que nos caracteriza. En la Pastelería Inés creemos que cada creación no solo endulza, sino que también guarda recuerdos que acompañan a nuestras familias por generaciones.
               </p>
             </div>
 
