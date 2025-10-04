@@ -23,6 +23,7 @@ export default function CheckoutDialog({ open, onOpenChange }: CheckoutDialogPro
   const { toast } = useToast()
   const [step, setStep] = useState<"shipping" | "payment" | "success">("shipping")
   const [paymentMethod, setPaymentMethod] = useState("card")
+  const [isProcessing, setIsProcessing] = useState(false)
   const [shippingData, setShippingData] = useState({
     name: user?.name || "",
     email: user?.email || "",
@@ -41,18 +42,57 @@ export default function CheckoutDialog({ open, onOpenChange }: CheckoutDialogPro
     setStep("payment")
   }
 
-  const handlePaymentSubmit = (e: React.FormEvent) => {
+  const handlePaymentSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setStep("success")
-    setTimeout(() => {
-      clearCart()
-      onOpenChange(false)
-      setStep("shipping")
-      toast({
-        title: "Pedido realizado con éxito",
-        description: "Recibirás un correo de confirmación pronto",
+    setIsProcessing(true)
+
+    try {
+      // Guardar el pedido en la base de datos
+      const response = await fetch("/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: user?.id,
+          items: cart,
+          total: total.toFixed(2),
+          address: shippingData.address,
+          phone: shippingData.phone,
+          paymentMethod: paymentMethod === "card" ? "Tarjeta" : "Efectivo",
+          shippingData,
+        }),
       })
-    }, 3000)
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || "Error al procesar el pedido")
+      }
+
+      // Mostrar pantalla de éxito
+      setStep("success")
+
+      // Limpiar carrito y cerrar después de 3 segundos
+      setTimeout(() => {
+        clearCart()
+        onOpenChange(false)
+        setStep("shipping")
+        setIsProcessing(false)
+        toast({
+          title: "Pedido realizado con éxito",
+          description: `Tu pedido #${data.orderId} ha sido confirmado`,
+        })
+      }, 3000)
+    } catch (error) {
+      console.error("Error al crear pedido:", error)
+      setIsProcessing(false)
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "No se pudo procesar el pedido",
+        variant: "destructive",
+      })
+    }
   }
 
   return (
@@ -71,7 +111,7 @@ export default function CheckoutDialog({ open, onOpenChange }: CheckoutDialogPro
 
         {step === "success" ? (
           <div className="text-center py-12">
-            <CheckCircle2 className="h-20 w-20 text-green-500 mx-auto mb-4" />
+            <CheckCircle2 className="h-20 w-20 text-green-500 mx-auto mb-4 animate-bounce" />
             <h3 className="text-2xl font-bold text-gray-900 mb-2">¡Gracias por tu compra!</h3>
             <p className="text-gray-600 mb-4">Tu pedido está siendo procesado</p>
             <p className="text-sm text-gray-500">Recibirás un correo de confirmación en breve</p>
@@ -231,14 +271,21 @@ export default function CheckoutDialog({ open, onOpenChange }: CheckoutDialogPro
                   )}
 
                   <div className="flex gap-2 pt-4">
-                    <Button type="button" variant="outline" onClick={() => setStep("shipping")} className="flex-1">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setStep("shipping")}
+                      className="flex-1"
+                      disabled={isProcessing}
+                    >
                       Volver
                     </Button>
                     <Button
                       type="submit"
                       className="flex-1 bg-gradient-to-r from-pink-600 to-rose-500 hover:from-pink-700 hover:to-rose-600"
+                      disabled={isProcessing}
                     >
-                      Confirmar Pedido
+                      {isProcessing ? "Procesando..." : "Confirmar Pedido"}
                     </Button>
                   </div>
                 </form>

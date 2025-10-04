@@ -1,7 +1,20 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Menu, X, ShoppingCart, Heart, Search, User, LogOut, UserCircle, Package, Trash2, Plus } from "lucide-react"
+import {
+  Menu,
+  X,
+  ShoppingCart,
+  Heart,
+  Search,
+  User,
+  LogOut,
+  UserCircle,
+  Package,
+  Trash2,
+  Plus,
+  Shield,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useAppContext } from "@/context/AppContext"
@@ -212,7 +225,7 @@ export default function Navbar() {
                               size="sm"
                               variant="outline"
                               onClick={() => handleRemoveFromFavorites(item.id)}
-                              className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 h-8 px-3 transition-all duration-200 hover:scale-105"
+                              className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 h-8 px-3 transition-all duration-200 hover:scale-110"
                             >
                               <Trash2 className="h-4 w-4 mr-1" />
                               Quitar
@@ -338,6 +351,17 @@ export default function Navbar() {
                       <Package className="mr-2 h-4 w-4" />
                       Mis Pedidos
                     </DropdownMenuItem>
+                    {user.role === "admin" && (
+                      <>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem asChild className="cursor-pointer transition-colors">
+                          <a href="/admin" className="flex items-center">
+                            <Shield className="mr-2 h-4 w-4" />
+                            Panel de Admin
+                          </a>
+                        </DropdownMenuItem>
+                      </>
+                    )}
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={logout} className="text-red-600 cursor-pointer transition-colors">
                       <LogOut className="mr-2 h-4 w-4" />
@@ -426,6 +450,19 @@ export default function Navbar() {
               {user && (
                 <div className="pt-2 border-t">
                   <p className="text-sm font-medium text-gray-900 mb-2">{user.name}</p>
+                  {user.role === "admin" && (
+                    <Button
+                      variant="outline"
+                      asChild
+                      className="w-full mb-2 bg-transparent"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <a href="/admin">
+                        <Shield className="mr-2 h-4 w-4" />
+                        Panel de Admin
+                      </a>
+                    </Button>
+                  )}
                   <Button variant="outline" onClick={logout} className="w-full text-red-600 bg-transparent">
                     <LogOut className="mr-2 h-4 w-4" />
                     Cerrar Sesión
